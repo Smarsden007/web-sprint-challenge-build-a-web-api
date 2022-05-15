@@ -14,8 +14,8 @@ Pull your server into this file and start it!
 */
 const server = require('./api/server')
 
-const PORT = process.env.PORT || 5000;
+const PORT = 9000;
 
 server.listen(PORT, () => {
-    console.log("WHERE LIVE!!!")
+    console.log(`WHERE LIVE ON PORT ${PORT}`)
 }) 

@@ -14,20 +14,16 @@ async function validateActionId(req, res, next){
     }
 }
 
-async function validateAction (req, res, next){
-    const {project_id, description, notes, completed} = req.body
-    if(!project_id){
-        res.status(400).json({message: 'missing required project id'})
+const validateAction = async (req, res, next) => {
+    if (!req.body.notes || !req.body.description || !req.body.project_id) {
+      next({
+        status: 400,
+        message: "missing required field",
+      });
+    } else {
+      next();
     }
-    if(!notes || !notes.trim){
-        res.status(400).json({message: 'missing required project notes'})
-    } else{
-        req.project_id = project_id
-        req.description = description.trim()
-        req.notes = notes.trim()
-        req.completed = completed
-        next()
-    }
-}
+  };
+
 
 module.exports = {validateActionId, validateAction}

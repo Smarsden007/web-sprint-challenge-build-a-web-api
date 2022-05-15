@@ -15,8 +15,10 @@ router.get("/", (req, res) => {
         })
 })
 
-router.get("/:id", validateProjectId, (req,res, next) => {
+router.get("/:id", validateProjectId, async (req,res, next) => {
+ 
     try{
+        
         res.status(200).json(req.params)
     } catch(err){
         next(err)
@@ -31,25 +33,22 @@ router.post('/', (req, res) => {
         })
         .catch(error => {
             console.log(error);
-            res.status(500).json({
+            res.status(400).json({
               message: 'Error adding the project',
             })
           })
 })
 
-router.put("/:id", validateProjectId, validateProject, (req,res, next) => {
-    const {name, description, completed} = req.body
-    if(!name || !description, !completed){
-        res.status(400).json({message: 'Project ID does not exist'})
-    } else{
-        Projects.update(req.params.id, req.body)
-            .then(() => {
-                return Projects.get(req.params.id)
-            })
-            .then(project => {
-                res.json(project)
-            })
-            .catch(next)
+router.put("/:id", validateProjectId, validateProject, async (req, res, next) => {
+    if (req.body.completed === undefined) {
+        next({ status: 400, message: "missing required fields"})
+    } else {
+        try {
+            const updatedAction = await Projects.update(req.params.id, req.body)
+            res.status(200).json(updatedAction)
+        } catch (err) {
+            next(err)
+        }
     }
 })
 
